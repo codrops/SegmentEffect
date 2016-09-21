@@ -4,7 +4,7 @@ Background image segment effect as seen on [Filippo Bello's Portfolio](http://ww
 
 [Article on Codrops](http://tympanus.net/codrops/?p=28039)
 
-[Demo](http://tympanus.net/Development/SegmentedSlideshow/)
+[Demo](http://tympanus.net/Development/SegmentEffect/)
 
 ## License
 
