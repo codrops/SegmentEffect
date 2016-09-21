@@ -73,7 +73,7 @@
 		extend(this.options, options);
 		// Preload main image.
 		var self = this;
-		imagesLoaded(this.el, function() {
+		imagesLoaded(this.el, { background: true }, function() {
 			self._init();
 			self._initEvents();
 		});
@@ -112,18 +112,11 @@
 		// The positions of the pieces in percentage values. 
 		// We can also use random values by setting options.positions to "random".
 		positions: [
-		{
-			top: 80, left: 10, width: 30, height: 20
-		},
-		{
-			top: 2, left: 2, width: 40, height: 40
-		},
-		{
-			top: 30, left: 60, width: 30, height: 60
-		},
-		{
-			top: 10, left: 20, width: 50, height: 60
-		}]
+			{top: 80, left: 10, width: 30, height: 20},
+			{top: 2, left: 2, width: 40, height: 40},
+			{top: 30, left: 60, width: 30, height: 60},
+			{top: 10, left: 20, width: 50, height: 60}
+		]
 	};
 
 	/**
@@ -135,9 +128,11 @@
 			width: this.el.offsetWidth,
 			height: this.el.offsetHeight
 		};
+		
 		// The source of the main image.
-		this.imgsrc = this.el.querySelector('img').src;
-
+		var background = this.el.style.backgroundImage;
+		this.imgsrc = background.substring(background.lastIndexOf("(")+2,background.lastIndexOf(")")-1);
+		
 		// Create the layout.
 		this._layout();
 
