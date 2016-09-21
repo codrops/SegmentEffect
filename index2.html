@@ -87,23 +87,16 @@
 					animation: {
 						duration: 1500,
 						easing: 'easeInOutExpo',
-						delay: 100, // Delay increment per piece.
-						translateZ: 100, // We can also use an integer for a specific value.
+						delay: 100,
+						translateZ: 100
 					},
 					parallax: true,
 					positions: [
-					{
-						top: 0, left: 0, width: 45, height: 45
-					},
-					{
-						top: 55, left: 0, width: 45, height: 45
-					},
-					{
-						top: 0, left: 55, width: 45, height: 45
-					},
-					{
-						top: 55, left: 55, width: 45, height: 45
-					}]
+						{top: 0, left: 0, width: 45, height: 45},
+						{top: 55, left: 0, width: 45, height: 45},
+						{top: 0, left: 55, width: 45, height: 45},
+						{top: 55, left: 55, width: 45, height: 45}
+					]
 				});
 			
 			document.querySelector('.btn--trigger').addEventListener('click', function() {
