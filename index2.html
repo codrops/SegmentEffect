@@ -80,6 +80,7 @@
 		<script>
 		(function() {
 			var headline = document.querySelector('.trigger-headline'),
+				trigger = document.querySelector('.btn--trigger'),
 				segmenter = new Segmenter(document.querySelector('.segmenter'), {
 					pieces: 4,
 					animation: {
@@ -94,14 +95,16 @@
 						{top: 55, left: 0, width: 45, height: 45},
 						{top: 0, left: 55, width: 45, height: 45},
 						{top: 55, left: 55, width: 45, height: 45}
-					]
+					],
+					onReady: function() {
+						trigger.classList.remove('btn--hidden');
+						trigger.addEventListener('click', function() {
+							segmenter.animate();
+							headline.classList.remove('trigger-headline--hidden');
+							this.classList.add('btn--hidden');
+						});
+					}
 				});
-			
-			document.querySelector('.btn--trigger').addEventListener('click', function() {
-				segmenter.animate();
-				headline.classList.remove('trigger-headline--hidden');
-				this.classList.add('btn--hidden');
-			});
 		})();
 		</script>
 	</body>

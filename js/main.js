@@ -74,6 +74,7 @@
 		// Preload main image.
 		var self = this;
 		imagesLoaded(this.el, { background: true }, function() {
+			self.options.onReady();
 			self._init();
 			self._initEvents();
 		});
@@ -107,6 +108,7 @@
 			// translateY: {min: -100, max: 100} // We can also use an integer for a specific value.
 		},
 		// Callbacks
+		onReady: function() { return false; },
 		onAnimationComplete: function() { return false; },
 		onAnimationStart: function() { return false; },
 		// The positions of the pieces in percentage values. 

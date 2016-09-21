@@ -62,7 +62,7 @@
 			<div class="segmenter" style="background-image: url(img/1.jpg)"></div>
 			<h2 class="trigger-headline trigger-headline--hidden"><span>M</span><span>o</span><span>t</span><span>i</span><span>o</span><span>n</span></h2>
 			<div class="bottom-nav">
-				<button class="btn btn--trigger">Show Effect</button>
+				<button class="btn btn--trigger btn--hidden">Show Effect</button>
 				<nav class="codrops-demos">
 					<span>Examples: </span>
 					<a class="current-demo" href="index.html">1</a>
@@ -80,13 +80,17 @@
 		<script>
 		(function() {
 			var headline = document.querySelector('.trigger-headline'),
-				segmenter = new Segmenter(document.querySelector('.segmenter'));
-			
-			document.querySelector('.btn--trigger').addEventListener('click', function() {
-				segmenter.animate();
-				headline.classList.remove('trigger-headline--hidden');
-				this.classList.add('btn--hidden');
-			});
+				trigger = document.querySelector('.btn--trigger'),
+				segmenter = new Segmenter(document.querySelector('.segmenter'), {
+					onReady: function() {
+						trigger.classList.remove('btn--hidden');
+						trigger.addEventListener('click', function() {
+							segmenter.animate();
+							headline.classList.remove('trigger-headline--hidden');
+							this.classList.add('btn--hidden');
+						});
+					}
+				});
 		})();
 		</script>
 	</body>

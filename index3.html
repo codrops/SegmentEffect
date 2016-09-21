@@ -80,6 +80,7 @@
 		<script>
 		(function() {
 			var headline = document.querySelector('.trigger-headline'),
+				trigger = document.querySelector('.btn--trigger'),
 				segmenter = new Segmenter(document.querySelector('.segmenter'), {
 					pieces: 10,
 					shadowsAnimation: {
@@ -104,14 +105,16 @@
 						{top: 70, left: 70, width: 30, height: 30},
 						{top: 80, left: 80, width: 30, height: 30},
 						{top: 90, left: 90, width: 30, height: 30}
-					]
+					],
+					onReady: function() {
+						trigger.classList.remove('btn--hidden');
+						trigger.addEventListener('click', function() {
+							segmenter.animate();
+							headline.classList.remove('trigger-headline--hidden');
+							this.classList.add('btn--hidden');
+						});
+					}
 				});
-			
-			document.querySelector('.btn--trigger').addEventListener('click', function() {
-				segmenter.animate();
-				headline.classList.remove('trigger-headline--hidden');
-				this.classList.add('btn--hidden');
-			});
 		})();
 		</script>
 	</body>
