@@ -133,7 +133,7 @@
 		
 		// The source of the main image.
 		var background = this.el.style.backgroundImage;
-		this.imgsrc = background.substring(background.lastIndexOf("(")+2,background.lastIndexOf(")")-1);
+		this.imgsrc = background.replace('url(','').replace(')','').replace(/\"/gi, "");;
 		
 		// Create the layout.
 		this._layout();
