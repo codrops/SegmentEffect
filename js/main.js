@@ -63,6 +63,36 @@
 		}
 		return ret;
 	}
+	// Check if clip-path is supported. From http://stackoverflow.com/a/30041538.
+	function areClipPathShapesSupported() {
+		var base = 'clipPath',
+			prefixes = [ 'webkit', 'moz', 'ms', 'o' ],
+			properties = [ base ],
+			testElement = document.createElement( 'testelement' ),
+			attribute = 'polygon(50% 0%, 0% 100%, 100% 100%)';
+
+		// Push the prefixed properties into the array of properties.
+		for ( var i = 0, l = prefixes.length; i < l; i++ ) {
+			var prefixedProperty = prefixes[i] + base.charAt( 0 ).toUpperCase() + base.slice( 1 ); // remember to capitalize!
+			properties.push( prefixedProperty );
+		}
+
+		// Interate over the properties and see if they pass two tests.
+		for ( var i = 0, l = properties.length; i < l; i++ ) {
+			var property = properties[i];
+
+			// First, they need to even support clip-path (IE <= 11 does not)...
+			if ( testElement.style[property] === '' ) {
+
+				// Second, we need to see what happens when we try to create a CSS shape...
+				testElement.style[property] = attribute;
+				if ( testElement.style[property] !== '' ) {
+					return true;
+				}
+			}
+		}
+		return false;
+	};
 
 	/**
 	 * Segmenter obj.
@@ -159,6 +189,9 @@
 	 * Creates the layout.
 	 */
 	Segmenter.prototype._layout = function() {
+		// clip-path support
+		var clipPath = areClipPathShapesSupported();
+
 		var segBgEl = document.createElement('div');
 		segBgEl.className = 'segmenter__background';
 		segBgEl.style.backgroundImage = 'url(' + this.imgsrc + ')';
@@ -170,38 +203,36 @@
 		segPieces.className = 'segmenter__pieces';
 
 		for(var i = 0, len = this.options.pieces; i < len; ++i) {
-			var clipTop, clipLeft, clipRight, clipBottom;
-
 			if( this.options.parallax ) {
 				segPiecesHTML += '<div class="segmenter__piece-parallax">';
 			}
 
 			segPiecesHTML += '<div class="segmenter__piece-wrap">';
+			
+			var top, left, width, height, clipTop, clipLeft, clipRight, clipBottom,
+				pos = i <= positionsTotal - 1 ? i : 0,
+				isRandom = this.options.positions === 'random';
 
-			if( this.options.positions === 'random' ) {
-				var randT = anime.random(0,100), randL = anime.random(0,100), randW = anime.random(0,100), randH = anime.random(0,100);
-				clipTop = randT/100 * this.dimensions.height;
-				clipLeft = randL/100 * this.dimensions.width;
-				clipRight = randW/100 * this.dimensions.width + clipLeft;
-				clipBottom = randH/100 * this.dimensions.height + clipTop;
-
-				if( this.options.shadows ) {
-					segPiecesHTML += '<div class="segmenter__shadow" style="top: ' + randT + '%; left: ' + randL + '%; width: ' + randW + '%; height: ' + randH + '%"></div>';
-				}
-			}
-			else {
-				var pos = i <= positionsTotal - 1 ? i : 0;
-				clipTop = this.options.positions[pos].top/100 * this.dimensions.height;
-				clipLeft = this.options.positions[pos].left/100 * this.dimensions.width;
-				clipRight = this.options.positions[pos].width/100 * this.dimensions.width + clipLeft;
-				clipBottom = this.options.positions[pos].height/100 * this.dimensions.height + clipTop;
-
-				if( this.options.shadows ) {
-					segPiecesHTML += '<div class="segmenter__shadow" style="top: ' + this.options.positions[pos].top + '%; left: ' + this.options.positions[pos].left + '%; width: ' + this.options.positions[pos].width + '%; height: ' + this.options.positions[pos].height + '%"></div>';		
-				}
+			top = isRandom ? anime.random(0,100) : this.options.positions[pos].top;
+			left = isRandom ? anime.random(0,100) : this.options.positions[pos].left;
+			width = isRandom ? anime.random(0,100) : this.options.positions[pos].width;
+			height = isRandom ? anime.random(0,100) : this.options.positions[pos].height;
+			
+			if( !clipPath ) {
+				clipTop = isRandom ? top/100 * this.dimensions.height : this.options.positions[pos].top/100 * this.dimensions.height;
+				clipLeft = isRandom ? left/100 * this.dimensions.width : this.options.positions[pos].left/100 * this.dimensions.width;
+				clipRight = isRandom ? width/100 * this.dimensions.width + clipLeft : this.options.positions[pos].width/100 * this.dimensions.width + clipLeft;
+				clipBottom = isRandom ? height/100 * this.dimensions.height + clipTop : this.options.positions[pos].height/100 * this.dimensions.height + clipTop;
 			}
 
-			segPiecesHTML += '<div class="segmenter__piece" style="background-image: url(' + this.imgsrc + '); clip: rect(' + clipTop + 'px,' + clipRight + 'px,' + clipBottom + 'px,' + clipLeft + 'px)"></div>';
+			if( this.options.shadows ) {
+				segPiecesHTML += '<div class="segmenter__shadow" style="top: ' + top + '%; left: ' + left + '%; width: ' + width + '%; height: ' + height + '%"></div>';		
+			}
+
+			segPiecesHTML += clipPath ?
+							'<div class="segmenter__piece" style="background-image: url(' + this.imgsrc + '); -webkit-clip-path: polygon(' + left + '% ' + top + '%, ' + (left + width) + '% ' + top + '%, ' + (left + width) + '% ' + (top + height) + '%, ' + left + '% ' + (top + height) + '%); path: polygon(' + left + '% ' + top + '%, ' + (left + width) + '% ' + top + '%, ' + (left + width) + '% ' + (top + height) + '%, ' + left + '% ' + (top + height) + '%)"></div>' :
+							'<div class="segmenter__piece" style="background-image: url(' + this.imgsrc + '); clip: rect(' + clipTop + 'px,' + clipRight + 'px,' + clipBottom + 'px,' + clipLeft + 'px)"></div>';
+
 			segPiecesHTML += '</div>'
 			if( this.options.parallax ) {
 				segPiecesHTML += '</div>';
