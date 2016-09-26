@@ -104,9 +104,9 @@
 		// Preload main image.
 		var self = this;
 		imagesLoaded(this.el, { background: true }, function() {
-			self.options.onReady();
 			self._init();
 			self._initEvents();
+			self.options.onReady();
 		});
 	}
 
