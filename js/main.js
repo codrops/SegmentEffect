@@ -251,7 +251,7 @@
 	 */
 	Segmenter.prototype._renderPiece = function(piece) {
 		var idx = this.pieces.indexOf(piece);
-
+		var self = this;
 		if( self.options.animation.translateZ != undefined ) {
 			if( typeof self.options.animation.translateZ === 'object' ) {
 				var randArr = createRandIntOrderedArray(self.options.animation.translateZ.min, self.options.animation.translateZ.max, self.options.pieces);
